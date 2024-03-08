@@ -17,7 +17,7 @@ public:
 	}
 
 	Test(const Test& test) {
-		this->value = value;
+		this->value = test->value;
 	}
 
 	Test& operator=(const Test& test) {
