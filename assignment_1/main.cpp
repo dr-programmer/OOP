@@ -31,10 +31,10 @@ public:
 		return *this;
 	}
 	virtual double execute(const double d1, const double d2) = 0;
-	string getName() {
+	string getName() const {
 		return this->name;
 	}
-	string getSymbol() {
+	string getSymbol() const {
 		return this->symbol;
 	}
 	void setName(string name) {
@@ -178,6 +178,9 @@ public:
 		return *this;
 	}
 	~Calculator() {
+		for(unsigned int i = 0; i < numberOfSupportedOperations; i++) {
+			delete operations[i];
+		}
 		delete [] operations;
 		delete [] name;
 	}
@@ -248,7 +251,7 @@ int main() {
 	while(1) {
 		cout << "Enter calculator's name: ";
 		getline(cin, cName);
-		cout << "Enter operations: " << endl;
+		cout << "Enter operations: (End input with 'end')" << endl;
 		string symbol, temp, name;
 		int flag = 0;
 		while(1) {
@@ -318,6 +321,7 @@ int main() {
 				fgets(buff, 100, stdin);
 				break;
 			case 4:
+				delete(c);
 				exit(0);
 			default:
 				fgets(buff, 100, stdin);
