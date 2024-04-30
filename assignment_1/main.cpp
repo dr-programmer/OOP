@@ -2,8 +2,8 @@
 #include <string>
 #include <cmath>
 #include <cstring>
-#include <climits>
 #include <stdlib.h>
+#include <typeinfo>
 
 using namespace std;
 
@@ -12,6 +12,7 @@ protected:
 	string name;
 	string symbol;
 public:
+	Operation() = default;
 	Operation(string name, string symbol) {
 		if(name.empty()) throw "Error: cannot assign empty string: name";
 		if(symbol.empty()) throw "Error: cannot assign empty string: symbol";
@@ -19,8 +20,8 @@ public:
 		this->symbol = symbol;	
 	}
 	Operation(const Operation& temp) {
-		if(name.empty()) throw "Error: cannot assign empty string: name";
-		if(symbol.empty()) throw "Error: cannot assign empty string: symbol";
+		if(temp.name.empty()) throw "Error: cannot assign empty string: name";
+		if(temp.symbol.empty()) throw "Error: cannot assign empty string: symbol";
 		this->name = temp.name;
 		this->symbol = temp.symbol;
 	}
@@ -50,7 +51,7 @@ public:
 class AddOperation : public Operation {
 public:
 	AddOperation(string name, string symbol) : Operation(name, symbol) {}
-	AddOperation(const AddOperation& temp) : Operation(temp) {}
+	AddOperation(const Operation& temp) : Operation(temp) {}
 	AddOperation& operator=(const AddOperation& temp) {
 		if(this == &temp) return *this;
 		this->name = temp.name;
@@ -65,7 +66,7 @@ public:
 class SubtractOperation : public Operation {
 public:
 	SubtractOperation(string name, string symbol) : Operation(name, symbol) {}
-	SubtractOperation(const SubtractOperation& temp) : Operation(temp) {}
+	SubtractOperation(const Operation& temp) : Operation(temp) {}
 	SubtractOperation& operator=(const SubtractOperation& temp) {
 		if(this == &temp) return *this;
 		this->name = temp.name;
@@ -80,7 +81,7 @@ public:
 class MultiplyOperation : public Operation {
 public:
 	MultiplyOperation(string name, string symbol) : Operation(name, symbol) {}
-	MultiplyOperation(const MultiplyOperation& temp) : Operation(temp) {}
+	MultiplyOperation(const Operation& temp) : Operation(temp) {}
 	MultiplyOperation& operator=(const MultiplyOperation& temp) {
 		if(this == &temp) return *this;
 		this->name = temp.name;
@@ -95,7 +96,7 @@ public:
 class DivideOperation : public Operation {
 public:
 	DivideOperation(string name, string symbol) : Operation(name, symbol) {}
-	DivideOperation(const DivideOperation& temp) : Operation(temp) {}
+	DivideOperation(const Operation& temp) : Operation(temp) {}
 	DivideOperation& operator=(const DivideOperation& temp) {
 		if(this == &temp) return *this;
 		this->name = temp.name;
@@ -110,7 +111,7 @@ public:
 class PowerOperation : public Operation {
 public:
 	PowerOperation(string name, string symbol) : Operation(name, symbol) {}
-	PowerOperation(const PowerOperation& temp) : Operation(temp) {}
+	PowerOperation(const Operation& temp) : Operation(temp) {}
 	PowerOperation& operator=(const PowerOperation& temp) {
 		if(this == &temp) return *this;
 		this->name = temp.name;
@@ -125,7 +126,7 @@ public:
 class RootOperation : public Operation {
 public:
 	RootOperation(string name, string symbol) : Operation(name, symbol) {}
-	RootOperation(const RootOperation& temp) : Operation(temp) {}
+	RootOperation(const Operation& temp) : Operation(temp) {}
 	RootOperation& operator=(const RootOperation& temp) {
 		if(this == &temp) return *this;
 		this->name = temp.name;
@@ -140,7 +141,7 @@ public:
 
 class Calculator {
 protected:
-	char *name;
+	const char *name;
 	size_t numberOfSupportedOperations;
 	size_t capacityForOperations;
 	Operation **operations;
@@ -155,25 +156,34 @@ public:
 		if(n < 1) throw "Error: operation capacity less than 1";
 		if(name == nullptr || name[0] == '\0') throw "Error: empty name";
 		if(ops == nullptr) throw "Error: ops given as nullptr";
-		this->name = new char[strlen(name) + 1];
-		strcpy(this->name, name);
+		char *temp_name = new char[strlen(name) + 1];
+		strcpy(temp_name, name);
+		this->name = temp_name;
 		this->capacityForOperations = n;
-		this->numberOfSupportedOperations = n;
+		this->numberOfSupportedOperations = 0;
 		operations = new Operation*[n];
-		if(ops != NULL) for(unsigned int i = 0; i < n; i++) {
-			operations[i] = ops[i];
+		for(unsigned int i = 0; i < n; i++) {
+			this->addOperation(ops[i]);
+			//cout << &ops[i] << " | " << &this->operations[i] << endl;
 		}
 	}
 	Calculator(const Calculator& temp) : Calculator(temp.name, temp.capacityForOperations, temp.operations) {}
 	Calculator& operator=(const Calculator& temp) {
 		if(this == &temp) return *this;
-		this->name = new char[strlen(temp.name) + 1];
-		strcpy(this->name, temp.name);
+		delete [] this->name;
+		for(unsigned int i = 0; i < this->numberOfSupportedOperations; i++) {
+			//cout << &temp.operations[i] << " | " << &this->operations[i] << endl;
+			delete this->operations[i];
+		}
+		delete [] this->operations;
+		char *temp_name = new char[strlen(temp.name) + 1];
+		strcpy(temp_name, temp.name);
+		this->name = temp_name;
 		this->capacityForOperations = temp.capacityForOperations;
-		this->numberOfSupportedOperations = temp.numberOfSupportedOperations;
+		this->numberOfSupportedOperations = 0;
 		this->operations = new Operation*[this->capacityForOperations];
-		if(temp.operations != NULL) for(unsigned int i = 0; i < temp.numberOfSupportedOperations; i++) {
-			this->operations[i] = temp.operations[i];
+		for(unsigned int i = 0; i < temp.numberOfSupportedOperations; i++) {
+			this->addOperation(temp.operations[i]);
 		}
 		return *this;
 	}
@@ -198,7 +208,27 @@ public:
 			this->operations = (Operation **)realloc(this->operations, 
 					this->capacityForOperations * sizeof(Operation *));
 		}
-		this->operations[this->numberOfSupportedOperations++] = (Operation *)op;
+		const type_info& op_type = typeid(*op);
+		Operation *temp_operation;
+		if(op_type == typeid(AddOperation)) {
+			temp_operation = new AddOperation(*op);
+		}
+		else if(op_type == typeid(SubtractOperation)) {
+			temp_operation = new SubtractOperation(*op);
+		}
+		else if(op_type == typeid(MultiplyOperation)) {
+			temp_operation = new MultiplyOperation(*op);
+		}
+		else if(op_type == typeid(DivideOperation)) {
+			temp_operation = new DivideOperation(*op);
+		}
+		else if(op_type == typeid(PowerOperation)) {
+			temp_operation = new PowerOperation(*op);
+		}
+		else if(op_type == typeid(RootOperation)) {
+			temp_operation = new RootOperation(*op);
+		}
+		this->operations[this->numberOfSupportedOperations++] = temp_operation;
 	}
 	void startCalculating() {
 		string temp;
@@ -294,39 +324,44 @@ int main() {
 		if(flag) continue;
 		break;
 	}
-	Calculator *c = new Calculator(cName.c_str(), opIndex, ops);
-	while(1) {
-		cout << "1: List supported Operations" << endl;
-		cout << "2: List input format" << endl;
-		cout << "3: Start calculating" << endl;
-		cout << "4: Exit" << endl;
-		string sInput;
-		int input = 0;
-		cin >> sInput;
-		try {
-			input = stod(sInput);
-		} catch(invalid_argument) {
-			continue;
+	try {
+		Calculator *c = new Calculator(cName.c_str(), opIndex, ops);
+		for(; opIndex >= 0; opIndex--) {
+			delete ops[opIndex];
 		}
-		switch(input) {
-			case 1:
-				c->listSupportedOperations();
-				break;
-			case 2:
-				c->listInputFormat();
-				break;
-			case 3:
-				c->startCalculating();
-				char buff[100];
-				fgets(buff, 100, stdin);
-				break;
-			case 4:
-				delete(c);
-				exit(0);
-			default:
-				fgets(buff, 100, stdin);
+		while(1) {
+			cout << "1: List supported Operations" << endl;
+			cout << "2: List input format" << endl;
+			cout << "3: Start calculating" << endl;
+			cout << "4: Exit" << endl;
+			string sInput;
+			int input = 0;
+			cin >> sInput;
+			try {
+				input = stod(sInput);
+			} catch(invalid_argument) {
 				continue;
-		}
-	}
+			}
+			switch(input) {
+				case 1:
+					c->listSupportedOperations();
+					break;
+				case 2:
+					c->listInputFormat();
+					break;
+				case 3:
+					c->startCalculating();
+					char buff[100];
+					fgets(buff, 100, stdin);
+					break;
+				case 4:
+					delete(c);
+					exit(0);
+				default:
+					fgets(buff, 100, stdin);
+					continue;
+			}
+		} 
+	} catch(const char *message) { cout << message << endl; }
 	return 0;
 }
