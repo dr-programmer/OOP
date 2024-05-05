@@ -50,7 +50,7 @@ public:
 
 class AddOperation : public Operation {
 public:
-	AddOperation(string name, string symbol) : Operation(name, symbol) {}
+	AddOperation() : Operation("add", "+") {}
 	AddOperation(const Operation& temp) : Operation(temp) {}
 	AddOperation& operator=(const AddOperation& temp) {
 		if(this == &temp) return *this;
@@ -65,7 +65,7 @@ public:
 
 class SubtractOperation : public Operation {
 public:
-	SubtractOperation(string name, string symbol) : Operation(name, symbol) {}
+	SubtractOperation() : Operation("sub", "-") {}
 	SubtractOperation(const Operation& temp) : Operation(temp) {}
 	SubtractOperation& operator=(const SubtractOperation& temp) {
 		if(this == &temp) return *this;
@@ -80,7 +80,7 @@ public:
 
 class MultiplyOperation : public Operation {
 public:
-	MultiplyOperation(string name, string symbol) : Operation(name, symbol) {}
+	MultiplyOperation() : Operation("mul", "*") {}
 	MultiplyOperation(const Operation& temp) : Operation(temp) {}
 	MultiplyOperation& operator=(const MultiplyOperation& temp) {
 		if(this == &temp) return *this;
@@ -95,7 +95,7 @@ public:
 
 class DivideOperation : public Operation {
 public:
-	DivideOperation(string name, string symbol) : Operation(name, symbol) {}
+	DivideOperation() : Operation("div", "/") {}
 	DivideOperation(const Operation& temp) : Operation(temp) {}
 	DivideOperation& operator=(const DivideOperation& temp) {
 		if(this == &temp) return *this;
@@ -110,7 +110,7 @@ public:
 
 class PowerOperation : public Operation {
 public:
-	PowerOperation(string name, string symbol) : Operation(name, symbol) {}
+	PowerOperation() : Operation("pow", "**") {}
 	PowerOperation(const Operation& temp) : Operation(temp) {}
 	PowerOperation& operator=(const PowerOperation& temp) {
 		if(this == &temp) return *this;
@@ -125,7 +125,7 @@ public:
 
 class RootOperation : public Operation {
 public:
-	RootOperation(string name, string symbol) : Operation(name, symbol) {}
+	RootOperation() : Operation("root", "V") {}
 	RootOperation(const Operation& temp) : Operation(temp) {}
 	RootOperation& operator=(const RootOperation& temp) {
 		if(this == &temp) return *this;
@@ -202,7 +202,7 @@ public:
 	void listInputFormat() {
 		cout << "<num1>  <symbol>  <num2> … <numN> = \\n" << endl;
 	}
-	void addOperation(const Operation *op) {
+	Calculator& addOperation(const Operation *op) {
 		if(this->numberOfSupportedOperations >= this->capacityForOperations) {
 			this->capacityForOperations *= 2;
 			this->operations = (Operation **)realloc(this->operations, 
@@ -229,6 +229,7 @@ public:
 			temp_operation = new RootOperation(*op);
 		}
 		this->operations[this->numberOfSupportedOperations++] = temp_operation;
+		return *this;
 	}
 	void startCalculating() {
 		string temp;
@@ -287,28 +288,40 @@ int main() {
 		while(1) {
 			cin >> symbol;
 			if(symbol == "+") {
-				cin >> temp >> name;
-				ops[opIndex++] = new AddOperation(name, symbol);
+				cin >> temp;
+				getline(cin, name);
+				name.erase(0, 1);
+				ops[opIndex++] = new AddOperation();
 			}
 			else if(symbol == "-") {
-				cin >> temp >> name;
-				ops[opIndex++] = new SubtractOperation(name, symbol);
+				cin >> temp;
+				getline(cin, name);
+				name.erase(0, 1);
+				ops[opIndex++] = new SubtractOperation();
 			}
 			else if(symbol == "*") {
-				cin >> temp >> name;
-				ops[opIndex++] = new MultiplyOperation(name, symbol);
+				cin >> temp;
+				getline(cin, name);
+				name.erase(0, 1);			
+				ops[opIndex++] = new MultiplyOperation();
 			}
 			else if(symbol == "/") {
-				cin >> temp >> name;
-				ops[opIndex++] = new DivideOperation(name, symbol);
+				cin >> temp;
+				getline(cin, name);
+				name.erase(0, 1);
+				ops[opIndex++] = new DivideOperation();
 			}
 			else if(symbol == "**") {
-				cin >> temp >> name;
-				ops[opIndex++] = new PowerOperation(name, symbol);
+				cin >> temp;
+				getline(cin, name);
+				name.erase(0, 1);
+				ops[opIndex++] = new PowerOperation();
 			}
 			else if(symbol == "V") {
-				cin >> temp >> name;
-				ops[opIndex++] = new RootOperation(name, symbol);
+				cin >> temp;
+				getline(cin, name);
+				name.erase(0, 1);
+				ops[opIndex++] = new RootOperation();
 			}
 			else if(symbol == "end") break;
 			else {
@@ -320,6 +333,8 @@ int main() {
 				}
 				break;
 			}
+			ops[opIndex-1]->setName(name);
+			ops[opIndex-1]->setSymbol(symbol);
 		}
 		if(flag) continue;
 		break;
