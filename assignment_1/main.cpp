@@ -320,7 +320,6 @@ int main() {
 			int startIndex = name.find_first_not_of(' ');
 			int endIndex = name.find_last_not_of(' ');
 			name = name.substr(startIndex, endIndex - startIndex + 1);
-			cout << name << endl;
 			ops[opIndex-1]->setName(name);
 			ops[opIndex-1]->setSymbol(symbol);
 		}
