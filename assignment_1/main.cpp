@@ -275,17 +275,26 @@ public:
 
 double Calculator::numberOfSuccessfulCalculations = 0;
 
+#define CLEAN_OPS 	for(; opIndex >= 0; opIndex--) { \
+				delete ops[opIndex]; \
+				ops[opIndex] = NULL; \
+			} \
+			opIndex = 0;
+
 int main() {
 	string cName;
+	unsigned int numOps;
 	Operation *ops[10] = {0};
 	int opIndex = 0;
+	cout << "Enter calculator's name: ";
+	getline(cin, cName);
+	cout << "Enter number of operations: ";
+	cin >> numOps;
 	while(1) {
-		cout << "Enter calculator's name: ";
-		getline(cin, cName);
-		cout << "Enter operations: (End input with 'end')" << endl;
+		cout << "Enter operations:" << endl;
 		string symbol, temp, name;
 		int flag = 0;
-		while(1) {
+		for(unsigned int i = 0; i < numOps; i++) {
 			cin >> symbol;
 			if(symbol == "+") {
 				ops[opIndex++] = new AddOperation();
@@ -305,17 +314,22 @@ int main() {
 			else if(symbol == "V") {
 				ops[opIndex++] = new RootOperation();
 			}
-			else if(symbol == "end") break;
 			else {
 				flag = 1;
 				char buffer[100];
 				fgets(buffer, 100, stdin);
-				for(; opIndex >= 0; opIndex--) {
-					delete ops[opIndex];
-				}
+				CLEAN_OPS;
+				cout << "Unsupported operation!" << endl;
 				break;
 			}
 			cin >> temp;
+			if(temp != "-") {
+				flag = 1;
+				getline(cin, temp);
+				CLEAN_OPS;
+				cout << "Wrong format!" << endl;
+				break;
+			}
 			getline(cin, name);
 			int startIndex = name.find_first_not_of(' ');
 			int endIndex = name.find_last_not_of(' ');
