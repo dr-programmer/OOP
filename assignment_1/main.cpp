@@ -288,39 +288,21 @@ int main() {
 		while(1) {
 			cin >> symbol;
 			if(symbol == "+") {
-				cin >> temp;
-				getline(cin, name);
-				name.erase(0, 1);
 				ops[opIndex++] = new AddOperation();
 			}
 			else if(symbol == "-") {
-				cin >> temp;
-				getline(cin, name);
-				name.erase(0, 1);
 				ops[opIndex++] = new SubtractOperation();
 			}
 			else if(symbol == "*") {
-				cin >> temp;
-				getline(cin, name);
-				name.erase(0, 1);			
 				ops[opIndex++] = new MultiplyOperation();
 			}
 			else if(symbol == "/") {
-				cin >> temp;
-				getline(cin, name);
-				name.erase(0, 1);
 				ops[opIndex++] = new DivideOperation();
 			}
 			else if(symbol == "**") {
-				cin >> temp;
-				getline(cin, name);
-				name.erase(0, 1);
 				ops[opIndex++] = new PowerOperation();
 			}
 			else if(symbol == "V") {
-				cin >> temp;
-				getline(cin, name);
-				name.erase(0, 1);
 				ops[opIndex++] = new RootOperation();
 			}
 			else if(symbol == "end") break;
@@ -333,6 +315,12 @@ int main() {
 				}
 				break;
 			}
+			cin >> temp;
+			getline(cin, name);
+			int startIndex = name.find_first_not_of(' ');
+			int endIndex = name.find_last_not_of(' ');
+			name = name.substr(startIndex, endIndex - startIndex + 1);
+			cout << name << endl;
 			ops[opIndex-1]->setName(name);
 			ops[opIndex-1]->setSymbol(symbol);
 		}
