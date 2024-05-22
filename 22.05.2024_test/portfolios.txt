@@ -1,0 +1,7 @@
+C
+MyPortfolio1
+3
+Bitcoin 70000 0.001
+Ethereum 3700 2.5
+Solana 180 22.5
+
