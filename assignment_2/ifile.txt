@@ -1,0 +1,12 @@
+e Ivan Ivanov 28 designer 3
+e Pesho Pr 21 programmer 1
+e Kalata Varelov 31 programmer 10
+e Vanya Preslavova 29 PR 6
+e Petya Sarafova 29 accountant 6
+e Roza Stancheva 21 accountant 3
+e Petar Ivanov 36 marketing 13
+e Boris Gris 41 marketing 20
+m Petar Petrov 35 delivery Ivan Ivanov 1756.43 Ivan Ivanov 2000.00 Pesho Pr 2100
+m Dimitar Peshev 41 human resources Kalata Varelov 2100 Vanya Preslavova 2189.3 Vanya Preslavova 2000.16
+m Boyan Dimitrov 31 sales Petya Sarafova 1987.25 Roza Stancheva 1390.23
+m Borislav Dimov 26 marketing Petar Ivanov 1390.23 Petar Ivanov 1894.24 Boris Gris 2000.18

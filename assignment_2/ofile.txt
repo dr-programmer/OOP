@@ -1,0 +1,12 @@
+Petar Petrov 35 delivery
+	Ivan Ivanov 28 designer 3 1878.22
+	Pesho Pr 21 programmer 1 2100
+Dimitar Peshev 41 human resources
+	Kalata Varelov 31 programmer 10 2100
+	Vanya Preslavova 29 PR 6 2094.73
+Boyan Dimitrov 31 sales
+	Petya Sarafova 29 accountant 6 1987.25
+	Roza Stancheva 21 accountant 3 1390.23
+Borislav Dimov 26 marketing
+	Petar Ivanov 36 marketing 13 1642.24
+	Boris Gris 41 marketing 20 2000.18
