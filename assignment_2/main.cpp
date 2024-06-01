@@ -89,8 +89,9 @@ class Person {
 protected:
 	string name;
 	unsigned int age;
-	static unsigned int numberOfPeople;
 public:
+	static unsigned int numberOfPeople;
+
 	Person() = default;
 	Person(const string name, const int age) {
 		if(name.empty()) throw "cannot create object [Person] with empty name [string]";
@@ -301,13 +302,15 @@ public:
 			sLine >> type;
 			if(type == "e") {
 				Employee temp_e;
+				temp_e.numberOfPeople++;
 				sLine >> temp_e;
-				employees.emplace_back(temp_e);
+				employees.push_back(temp_e);
 			}
 			else if(type == "m") {
 				Manager temp_m;
+				temp_m.numberOfPeople++;
 				sLine >> temp_m;
-				managers.emplace_back(temp_m);
+				managers.push_back(temp_m);
 				string temp_string;
 				while(sLine >> temp_string) {
 					Employee e;
@@ -330,7 +333,7 @@ public:
 						for(auto &temp : delivery) {
 							if(temp.getName() == e_name) found = 1;
 						}
-						if(!found) delivery.emplace_back(e);
+						if(!found) delivery.push_back(e);
 						managers.back().payEmployeeByName(e_name, delivery, salary);
 						cout << "Salary: " << salary << endl;
 						cout << delivery[0].getSalaries().getEmployeeName() << endl;
@@ -340,7 +343,7 @@ public:
 						for(auto &temp : marketing) {
 							if(temp.getName() == e_name) found = 1;
 						}
-						if(!found) marketing.emplace_back(e);
+						if(!found) marketing.push_back(e);
 						managers.back().payEmployeeByName(e_name, marketing, salary);
 					}
 					else if(department == "sales") {
@@ -348,7 +351,7 @@ public:
 						for(auto &temp : sales) {
 							if(temp.getName() == e_name) found = 1;
 						}
-						if(!found) sales.emplace_back(e);
+						if(!found) sales.push_back(e);
 						managers.back().payEmployeeByName(e_name, sales, salary);
 
 					}
@@ -357,7 +360,7 @@ public:
 						for(auto &temp : human_resources) {
 							if(temp.getName() == e_name) found = 1;
 						}
-						if(!found) human_resources.emplace_back(e);
+						if(!found) human_resources.push_back(e);
 						managers.back().payEmployeeByName(e_name, human_resources, salary);
 
 					}
