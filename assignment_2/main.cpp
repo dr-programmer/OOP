@@ -78,7 +78,10 @@ public:
 		if(size == capacity) resize();
 		salaries[size++] = salary;
 	}
-	
+	~EmployeePayments() {
+		delete [] this->salaries;
+	}
+
 	friend istream& operator>>(istream &in, Employee &obj);
 };
 
@@ -200,7 +203,6 @@ istream& operator>>(istream &in, Employee &obj) {
 	obj.position = position;
 	obj.experience = experience;
 	obj.salaries.employeeName = name;
-	cout << name << age << position << experience << endl;
 	return in;
 }
 ostream& operator<<(ostream &out, Employee &obj) {
@@ -275,7 +277,6 @@ istream& operator>>(istream &in, Manager &obj) {
 	obj.name = name;
 	obj.age = age;
 	obj.department = department;
-	cout << name << age << department << endl;
 	return in;
 }
 ostream& operator<<(ostream &out, Manager &obj) {
@@ -335,8 +336,6 @@ public:
 						}
 						if(!found) delivery.push_back(e);
 						managers.back().payEmployeeByName(e_name, delivery, salary);
-						cout << "Salary: " << salary << endl;
-						cout << delivery[0].getSalaries().getEmployeeName() << endl;
 					}
 					else if(department == "marketing") {
 						unsigned short found = 0;
@@ -401,6 +400,7 @@ public:
 				}
 			}
 		}
+		file.close();
 	}
 };
 
